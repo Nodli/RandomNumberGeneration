@@ -21,7 +21,7 @@ namespace rand
 }
 
 //Implementation of inline functions
-namespace random
+namespace rand
 {
 
   inline uint time_seed(){
