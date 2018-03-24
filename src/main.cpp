@@ -3,28 +3,30 @@
 #include <common.h>
 #include <array.h>
 #include <noise.h>
+#include <random.h>
 
 int main(){
 	
-	uint seed = time(NULL);
+	//uint seed = myrand::time_seed();
+	uint seed = 22u;
 	
 	std::default_random_engine generator{seed};
 	
-	float alt[10];
-	noise::white(generator, 10, alt);
-	array::display(alt, 10);
+	uint alt_length = 10u;
+	float alt[alt_length];
 
-	noise::brownian(generator, 0., 10, alt);
-	array::display(alt, 10);
+	noise::white(generator, alt_length, alt);
+	array::display(alt, alt_length);
 
+	noise::brownian(generator, 0., alt_length, alt);
+	array::display(alt, alt_length);
 
-	
-/*
-	noise::brownian_min_max(0.f, 20.f, 5, seed, 1000u, alt)[10];
-	array::add(alt, 1000u, -10.f);
-	array::display(alt, 1000u);
-*/
-	
+	for(uint ialt = 0; ialt != alt_length; ++ialt){
+		alt[ialt] = static_cast<float>(ialt);
+	}
+
+	myrand::random_combination(generator, alt, alt_length);
+	array::display(alt, alt_length);
 
 	return 0;
 }
