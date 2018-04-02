@@ -13,56 +13,9 @@ float* linear_sampling(float valueA, float valueB, uint array_size, float* array
 }
 
 int main(){
-	
+
 	uint seed = 0u;
 	std::default_random_engine generator{seed};
-	
-	#if 0
-	uint a_length = 10u;
-	float a[a_length];
-	float ida[a_length];
-	for(uint i = 0u; i != a_length; ++i){
-		ida[i] = static_cast<float>(i);
-	}
-
-	//noise::white(generator, a_length, a);
-	//array::display(a, a_length);
-
-	//noise::white_normal(generator, a_length, a);
-	//array::display(a, a_length);
-
-	//noise::random_walk(generator, a_length, a);
-	//array::display(a, a_length);
-
-	//noise::random_walk_min_max(generator, 0.f, 2.f, a_length, a);
-	//array::display(a, a_length);
-
-	//noise::brownian_bridge(a_length, a);
-	//array::display(a, a_length);
-
-	//noise::brownian_bridge_between_values(-1.f, 1.f, a_length, a);
-	//array::display(a, a_length);
-
-	//array::ASCIIexport(ida, a_length, "brownian_bridge.txt", true);
-	//array::ASCIIexport(a, a_length, "brownian_bridge.txt");
-
-	//myrand::random_combination(generator, ida, a_length);
-	//array::display(ida, a_length);
-	#endif
-
-	/**/
-	uint nsteps = 100;
-	float y[nsteps];
-	float x[nsteps];
-	for(uint i = 0u; i != nsteps; ++i){
-		x[i] = static_cast<float>(i);
-	}
-
-	noise::random_walk_min_max(generator, 0, nsteps, nsteps, y);
-	noise::brownian_bridge_between_values(0., 10., nsteps, y);
-	array::ASCIIexport(x, nsteps, "brownian_bridge.txt", true);
-	array::ASCIIexport(y, nsteps, "brownian_bridge.txt");
-
 
 	/* 2D Random Path between two points */
 	#if 0
@@ -84,9 +37,40 @@ int main(){
 	noise::brownian_bridge_between_values(starty, endy, nsteps, y);
 	array::display(y, nsteps);
 
-	array::ASCIIexport(x, nsteps, "brownian_bridge.txt", true);
-	array::ASCIIexport(y, nsteps, "brownian_bridge.txt");
+	array::ASCIIexport(x, nsteps, "brownian_bridge.values", true);
+	array::ASCIIexport(y, nsteps, "brownian_bridge.values");
 	#endif
 
+	/* 2D Perlin Noise */
+	uivec2 gradientsize = {20u, 20u};
+	std::cout << "gradient vector size: " << gradientsize << std::endl;
+	uint total_gradient_values = gradientsize.x * gradientsize.y;
+	fvec2 gradient_map[total_gradient_values];
+
+	noise::gradient2D(generator, total_gradient_values, gradient_map);
+	//array::display(gradient_map, total_gradient_values);
+
+	uivec2 noisesize = {gradientsize.x - 1u, gradientsize.y - 1u};
+	std::cout << "noise grid size: " << noisesize << std::endl;
+
+	uint sample_per_unit = 50u;
+	uint total_samples = noisesize.x * noisesize.y * sample_per_unit * sample_per_unit;
+	std::cout << "total grid samples: " << total_samples << std::endl;
+	float noise_values[total_samples];
+
+
+	for(unsigned int icell = 0; icell != total_samples; ++icell){
+		fvec2 icoord = {static_cast<float>(icell % (noisesize.x * sample_per_unit)) / static_cast<float>(sample_per_unit) + 0.5f / sample_per_unit,
+						static_cast<float>(icell / (noisesize.x * sample_per_unit)) / static_cast<float>(sample_per_unit) + 0.5f / sample_per_unit};
+		noise_values[icell] = noise::perlin2D(icoord, gradient_map, gradientsize);
+		//std::cout << "icell: " << icell << " icoord: " << icoord << " value: " << noise_values[icell] << std::endl;
+	}
+
+	std::string file_path = "perlin_noise.values";
+	std::ofstream ofile(file_path, std::ofstream::out);
+	ofile << "#size: " << noisesize.x * sample_per_unit << " " << noisesize.y * sample_per_unit << std::endl;
+	ofile.close();
+
+	array::ASCIIexport(noise_values, total_samples, file_path);
 	return 0;
 }
