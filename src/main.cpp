@@ -1,10 +1,12 @@
 #include <iostream>
-#include <ctime>
+#include <ctime> //time(NULL)
 #include <common.h>
 #include <array.h>
 #include <noise.h>
 #include <random.h>
+#include <vector.h>
 
+#if 0
 float* linear_sampling(float valueA, float valueB, uint array_size, float* array){
 	for(uint i = 0u; i != array_size; ++i){
 		float linear_interp_coeff = static_cast<float>(i) / static_cast<float>(array_size - 1);
@@ -42,7 +44,8 @@ int main(){
 	#endif
 
 	/* 2D Perlin Noise */
-	uivec2 gradientsize = {20u, 20u};
+	#if 1
+	uivec2 gradientsize = {15u, 15u};
 	std::cout << "gradient vector size: " << gradientsize << std::endl;
 	uint total_gradient_values = gradientsize.x * gradientsize.y;
 	fvec2 gradient_map[total_gradient_values];
@@ -53,7 +56,7 @@ int main(){
 	uivec2 noisesize = {gradientsize.x - 1u, gradientsize.y - 1u};
 	std::cout << "noise grid size: " << noisesize << std::endl;
 
-	uint sample_per_unit = 50u;
+	uint sample_per_unit = 100u;
 	uint total_samples = noisesize.x * noisesize.y * sample_per_unit * sample_per_unit;
 	std::cout << "total grid samples: " << total_samples << std::endl;
 	float noise_values[total_samples];
@@ -72,5 +75,11 @@ int main(){
 	ofile.close();
 
 	array::ASCIIexport(noise_values, total_samples, file_path);
+	#endif
+	return 0;
+}
+#endif
+
+int main(){
 	return 0;
 }

@@ -3,6 +3,7 @@
 
 #include <random>
 #include <common.h>
+#include <vector.h>
 
 namespace noise
 {
@@ -45,6 +46,8 @@ namespace noise
 
 	//Pink noise - http://www.firstpr.com.au/dsp/pink-noise/
 
+	//TODO: Refactor this as a usable Perlin Noise
+
 	/**
 	 * \brief Generates random unitary gradient vectors
 	 */
@@ -59,6 +62,8 @@ namespace noise
 	float perlin2D(const fvec2& coord, const fvec2* gradient2D, const uivec2& gridsize);
 
 }
+
+//TODO: Refactor these as a class / namespace for further use
 
 namespace grid
 {

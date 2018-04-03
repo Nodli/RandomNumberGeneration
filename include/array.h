@@ -10,99 +10,119 @@ namespace array
 {
 
 	template<typename T>
-	void display(T* array, uint length);
+	void display(T* src, uint length);
+
+	/**
+	 * \brief Exports the content of an array to a file
+	 * \details The array is exported as a line of the file separated by whitespaces
+	 * \param[in] overwrite true: overwrites the file with the array content
+	 *						false: appends the array content to the file
+	 */
+	template<typename T>
+	bool ASCIIexport(T* src, uint length,
+						std::string filepath, bool overwrite = true);
 
 	template<typename T>
-	bool ASCIIexport(T* array, uint length, std::string filepath, bool clear = false);
+	T* setall(T* src, uint length, const T& value);
 
 	template<typename T>
-	T* add(T* array, uint length, T& increment);
+	T* copy(T* src, T* dest);
 
 	template<typename T>
-	T* add(T* arrayA, T* arrayB, uint length);
+	T* add(T* src, T* dest, uint length);
 
 	template<typename T>
-	T* multiply(T* array, uint length, T& multiplicator);
+	T* add(T* src, uint length, const T& increment);
 
 	template<typename T>
-	T* set(T* array, uint length, T& value);
+	T* mult(T* src, uint length, const T& mult);
 
 	template<typename T>
-	T* copy(T* source, T* destination);
+	T* div(T* src, uint length, const T& div);
 
 }
 
-namespace array{
+/* -------------------------------------------------------------------------- */
 
-	template<typename T>
-	void display(T* array, uint length){
-		for(uint i = 0u; i != length; ++i){
-			std::cout << array[i] << " ";
-		}
-		std::cout << std::endl;
+template<typename T>
+void array::display(T* src, uint length){
+	for(uint ivalue = 0u; ivalue != length; ++ivalue){
+		std::cout << src[ivalue] << " ";
+	}
+}
+
+template<typename T>
+bool array::ASCIIexport(T* src, uint length,
+						std::string filepath, bool overwrite){
+	std::ofstream ofile;
+	if(overwrite){
+		ofile.open(filepath, std::ofstream::out);
+	}else{
+		ofile.open(filepath, std::ofstream::out | std::ofstream::app);
 	}
 
-	template<typename T>
-	bool ASCIIexport(T* array, uint length, std::string filepath, bool clear){
-		std::ofstream ofile;
-		if(clear){
-			ofile.open(filepath, std::ofstream::out);
-		}else{
-			ofile.open(filepath, std::ofstream::out | std::ofstream::app);
-		}
-		
-		if(!ofile.is_open()){ //Checking that the file has been opened
-			return false;
-		}
-		
-		for(uint ivalue = 0u; ivalue != length - 1; ++ivalue){
-			ofile << array[ivalue] << " ";
-		}
-		ofile << array[length - 1] <<  std::endl;
-
-		ofile.close();
-		return true;
+	if(!ofile.is_open()){
+		std::cout << "WARNING: The file could not be opened" << std::endl;
+		return false;
 	}
 
-	template<typename T>
-	T* add(T* array, uint length, T& increment){
-		for(uint i = 0u; i != length; ++i){
-			array[i] += increment;
-		}
-		return array;
+	for(uint ivalue = 0u; ivalue != length - 1; ++ivalue){
+		ofile << src[ivalue] << " ";
+	}
+	ofile << src[length - 1] << std::endl;
+
+	ofile.close();
+
+	return true;
+}
+
+template<typename T>
+T* array::setall(T* src, uint length, const T& value){
+	for(uint i = 0u; i != length; ++i){
+		src[i] = value;
+	}
+	return src;
+}
+
+template<typename T>
+T* array::copy(T* src, T* dest, uint length){
+	for(uint i = 0u; i != length; ++i){
+		dest[i] = src[i];
+	}
+	return dest;
+}
+
+template<typename T>
+T* array::add(T* src, T* dest, uint length){
+	for(uint ivalue = 0u; ivalue != length; ++ivalue){
+		dest[ivalue] += src[ivalue];
+	}
+	return dest;
+}
+
+template<typename T>
+T* array::add(T* src, uint length, const T& increment){
+	for(uint i = 0u; i != length; ++i){
+		src[i] += increment;
+	}
+	return src;
+}
+
+template<typename T>
+T* array::mult(T* src, uint length, const T& mult){
+	for(uint i = 0u; i != length; ++i){
+		src[i] *= mult;
+	}
+	return src;
+}
+
+template<typename T>
+T* div(T* src, uint length, const T& div){
+	for(uint ivalue = 0u; ivalue != length; ++ivalue){
+		src[ivalue] /= div;
 	}
 
-	template<typename T>
-	T* add(T* arrayA, T* arrayB, uint length){
-		for(uint i = 0u; i != length; ++i){
-			arrayA[i] += arrayB[i];
-		}
-		return arrayA;
-	}
-
-	template<typename T>
-	T* multiply(T* array, uint length, T& multiplicator){
-		for(uint i = 0u; i != length; ++i){
-			array[i] *= multiplicator;
-		}
-		return array;
-	}
-
-	template<typename T>
-	T* set(T* array, uint length, T& value){
-		for(uint i = 0u; i != length; ++i){
-			array[i] = value;
-		}
-		return array;
-	}
-
-	template<typename T>
-	T* copy(T* source, T* destination, uint length){
-		for(uint i = 0u; i != length; ++i){
-			destination[i] = source[i];
-		}
-		return destination;
-	}
+	return src;
 }
 
 #endif

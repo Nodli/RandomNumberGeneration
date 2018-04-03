@@ -1,6 +1,5 @@
 #include <iostream>
 #include <random.h>
-#include <array.h>
 
 float* myrand::random_combination(std::default_random_engine& generator, float* input_combination, uint input_size){
 	for(unsigned int step = 0; step != input_size - 1; ++step){

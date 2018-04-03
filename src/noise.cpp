@@ -1,8 +1,9 @@
 #include <iostream>
 #include <random>
 #include <cassert>
-#include <common.h>
 #include <noise.h>
+#include <common.h>
+#include <vector.h>
 
 float* noise::white_uniform(std::default_random_engine& generator, uint steps, float* out){
 	std::uniform_real_distribution<float> step_gen(-1.f, 1.f);
