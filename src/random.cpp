@@ -1,7 +1,7 @@
 #include <iostream>
 #include <random.h>
 
-float* myrand::random_combination(std::default_random_engine& generator, float* input_combination, uint input_size){
+float* myrand::random_combination(std::mt19937& generator, float* input_combination, uint input_size){
 	for(unsigned int step = 0; step != input_size - 1; ++step){
 		std::uniform_int_distribution<unsigned int> step_gen(0, input_size - 1 - step);
 		unsigned int random_index = step_gen(generator);

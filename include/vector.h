@@ -6,8 +6,9 @@ struct vec2{
 	T x;
 	T y;
 
-	vec2();
-	vec2(const vec2<T>& src);
+	//TODO: Make these outside functions - this does not allow the initialization through braced enclosed list
+	//vec2();
+	//vec2(const vec2<T>& src);
 
 	vec2<T>& operator=(const vec2<T>& src);
 	vec2<T>& operator+=(const vec2<T>& other);
@@ -55,6 +56,7 @@ T dot(const vec2<T>& lhs, const vec2<T>& rhs);
 /* -------------------------------------------------------------------------- */
 
 /* Methods */
+/*
 template<typename T>
 vec2<T>::vec2(){
 };
@@ -62,7 +64,7 @@ vec2<T>::vec2(){
 template<typename T>
 vec2<T>::vec2(const vec2<T>& src): x(src.x), y(src.y){
 };
-
+*/
 template<typename T>
 vec2<T>& vec2<T>::operator=(const vec2<T>& src){
 		if(this != &src){

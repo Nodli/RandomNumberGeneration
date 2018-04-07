@@ -7,7 +7,7 @@
 namespace myrand{
 
 	//Randomly scrambles float values in place
-	float* random_combination(std::default_random_engine& generator, float* input_combination, uint input_size);
+	float* random_combination(std::mt19937& generator, float* input_combination, uint input_size);
 
 }
 

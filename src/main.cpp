@@ -6,80 +6,33 @@
 #include <random.h>
 #include <vector.h>
 
-#if 0
-float* linear_sampling(float valueA, float valueB, uint array_size, float* array){
-	for(uint i = 0u; i != array_size; ++i){
-		float linear_interp_coeff = static_cast<float>(i) / static_cast<float>(array_size - 1);
-		array[i] = valueA * (1.f - linear_interp_coeff) + valueB * linear_interp_coeff;
+void use_perlin2D(){
+	//Sampling size ie size of the output map
+	uivec2 size = {400u, 400u};
+
+	//Coordinates of the sampling on the support map of the Perlin Noise - Should be 3 / 4 times lower than the sampling size
+	fvec2 origin = {0.f, 0.f};
+	fvec2 limit = {20.f, 20.f};
+
+	uint size_export[2] = {size.x, size.y};
+	float* values = new float[size.x * size.y];
+
+	for(uint iy = 0u; iy != size.y; ++iy){
+		for(uint ix = 0u; ix != size.x; ++ix){
+			fvec2 world_coord = {origin.x + static_cast<float>(ix) / static_cast<float>(size.x) * (limit.x - origin.x),
+									origin.y + static_cast<float>(iy) / static_cast<float>(size.y) * (limit.y - origin.y) };
+			values[iy * size.x + ix] = noise::perlin2D(world_coord);
+		}
 	}
+
+	array::ASCIIexport(size_export, 2, "perlin_noise.values", true);
+	array::ASCIIexport(values, size.x * size.y, "perlin_noise.values", false);
+
+	delete[] values;
 }
 
 int main(){
 
-	uint seed = 0u;
-	std::default_random_engine generator{seed};
 
-	/* 2D Random Path between two points */
-	#if 0
-	float startx = 0.;
-	float starty = 0.;
-
-	float endx = 1.;
-	float endy = 1.;
-
-	uint nsteps = 100;
-	float x[nsteps];
-	float y[nsteps];
-
-	noise::random_walk(generator, nsteps, x);
-	noise::brownian_bridge_between_values(startx, endx, nsteps, x);
-	array::display(x, nsteps);
-
-	noise::random_walk(generator, nsteps, y);
-	noise::brownian_bridge_between_values(starty, endy, nsteps, y);
-	array::display(y, nsteps);
-
-	array::ASCIIexport(x, nsteps, "brownian_bridge.values", true);
-	array::ASCIIexport(y, nsteps, "brownian_bridge.values");
-	#endif
-
-	/* 2D Perlin Noise */
-	#if 1
-	uivec2 gradientsize = {15u, 15u};
-	std::cout << "gradient vector size: " << gradientsize << std::endl;
-	uint total_gradient_values = gradientsize.x * gradientsize.y;
-	fvec2 gradient_map[total_gradient_values];
-
-	noise::gradient2D(generator, total_gradient_values, gradient_map);
-	//array::display(gradient_map, total_gradient_values);
-
-	uivec2 noisesize = {gradientsize.x - 1u, gradientsize.y - 1u};
-	std::cout << "noise grid size: " << noisesize << std::endl;
-
-	uint sample_per_unit = 100u;
-	uint total_samples = noisesize.x * noisesize.y * sample_per_unit * sample_per_unit;
-	std::cout << "total grid samples: " << total_samples << std::endl;
-	float noise_values[total_samples];
-
-
-	for(unsigned int icell = 0; icell != total_samples; ++icell){
-		fvec2 icoord = {static_cast<float>(icell % (noisesize.x * sample_per_unit)) / static_cast<float>(sample_per_unit) + 0.5f / sample_per_unit,
-						static_cast<float>(icell / (noisesize.x * sample_per_unit)) / static_cast<float>(sample_per_unit) + 0.5f / sample_per_unit};
-		noise_values[icell] = noise::perlin2D(icoord, gradient_map, gradientsize);
-		//std::cout << "icell: " << icell << " icoord: " << icoord << " value: " << noise_values[icell] << std::endl;
-	}
-
-	std::string file_path = "perlin_noise.values";
-	std::ofstream ofile(file_path, std::ofstream::out);
-	ofile << "#size: " << noisesize.x * sample_per_unit << " " << noisesize.y * sample_per_unit << std::endl;
-	ofile.close();
-
-	array::ASCIIexport(noise_values, total_samples, file_path);
-	#endif
-	return 0;
-}
-#endif
-
-int main(){
 	return 0;
 }

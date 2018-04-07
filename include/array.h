@@ -19,8 +19,7 @@ namespace array
 	 *						false: appends the array content to the file
 	 */
 	template<typename T>
-	bool ASCIIexport(T* src, uint length,
-						std::string filepath, bool overwrite = true);
+	bool ASCIIexport(T* src, uint length, std::string filepath, bool overwrite);
 
 	template<typename T>
 	T* setall(T* src, uint length, const T& value);
@@ -52,8 +51,7 @@ void array::display(T* src, uint length){
 }
 
 template<typename T>
-bool array::ASCIIexport(T* src, uint length,
-						std::string filepath, bool overwrite){
+bool array::ASCIIexport(T* src, uint length, std::string filepath, bool overwrite){
 	std::ofstream ofile;
 	if(overwrite){
 		ofile.open(filepath, std::ofstream::out);
