@@ -1,2 +1,2 @@
 # RandomNumberGeneration
-An implementation of Random Based and 2D Noise functions.
+An implementation of some random number generation functions and 2D noise functions.
